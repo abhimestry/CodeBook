@@ -1,4 +1,47 @@
+import { useNavigate } from "react-router-dom";
+import { useCart } from "../../../context";
+import { useEffect, useState } from "react";
+import { getUser,createOrder } from "../../../Services/dataService";
 export const Checkout = ({setCheckout}) => {
+    const { cartList, total, clearCart } = useCart();
+     
+    const [user, setUser] = useState({});
+    const navigate=useNavigate(); 
+        const cbid = JSON.parse(sessionStorage.getItem("cbid"));
+    useEffect (()=> {
+        
+        async function fetchUser() {
+            const data= await getUser();
+            setUser(data);
+        }
+        fetchUser();
+    },[]);
+
+    async function  handleOrderSubmit(event) {
+        event.preventDefault();      
+        try{
+            const order= {
+                CartList: cartList,
+                amount_paid:total,
+                quantity: cartList.length,
+                user: {
+                    name: user.name,
+                    email: user.email,
+                    id:cbid
+                }
+    
+            } 
+            const data = await createOrder(order);
+            
+            clearCart();
+            navigate("/order-summary",{ state : {data: data,status : true} });
+        }
+        catch(error){
+            navigate("/order-summary",{ state : {data: [], status : false} });
+        }
+               
+    }
+
     return (
       <section>
           <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50"></div>
@@ -15,14 +58,14 @@ export const Checkout = ({setCheckout}) => {
                       <h3 className="mb-4 text-xl font-medium text-gray-900 dark:text-white">
                       <i className="bi bi-credit-card mr-2"></i>CARD PAYMENT
                       </h3>
-                      <form className="space-y-6" >
+                      <form className="space-y-6" onSubmit={handleOrderSubmit} >
                       <div>
                           <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Name:</label>
-                          <input type="text" name="name" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:value-gray-400 dark:text-white" value="Shubham Sarda" disabled required="" />
+                          <input type="text" name="name" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:value-gray-400 dark:text-white" value={user.name || ""} disabled required="" />
                       </div>
                       <div>
                           <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Email:</label>
-                          <input type="text" name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:value-gray-400 dark:text-white" value="shubham@example.com" disabled required="" />
+                          <input type="text" name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:value-gray-400 dark:text-white" value={user.email || ""} disabled required="" />
                       </div>
                       <div>
                           <label htmlFor="card" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Card Number:</label>
@@ -38,7 +81,7 @@ export const Checkout = ({setCheckout}) => {
                           <input type="number" name="code" id="code" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:value-gray-400 dark:text-white" value="523" disabled required="" />
                       </div>
                       <p className="mb-4 text-2xl font-semibold text-lime-500 text-center">
-                          $99
+                          ${total}
                       </p>
                       <button type="submit" className="w-full text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700" >
                           <i className="mr-2 bi bi-lock-fill"></i>PAY NOW

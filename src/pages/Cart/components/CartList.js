@@ -5,13 +5,13 @@ import { useCart } from "../../../context";
 export const CartList = () => {
   const [checkout, setCheckout] =useState(false);
    
-  const { cartList } = useCart();
+  const { cartList, total } = useCart();
  
   return (
     <>
       <section>
         <p className="text-2xl text-center font-semibold dark:text-slate-100 my-10 underline underline-offset-8">
-          My Cart (cartList.length)
+          My Cart ({cartList.length})
         </p>
       </section>
       
@@ -25,7 +25,7 @@ export const CartList = () => {
         <div className="flex flex-col p-2 border-b dark:border-slate-700 text-lg dark:text-slate-100">
           <p className="flex justify-between my-2">
             <span className="font-semibold">Total Amount:</span>
-            <span>$99</span>
+            <span>${total}</span>
           </p>
         </div>
         <div className="text-right my-5">

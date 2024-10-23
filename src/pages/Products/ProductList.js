@@ -4,6 +4,8 @@ import { useTitle } from '../../Hooks/useTitle';
 import { useFilter } from '../../context';
 import { ProductCard } from '../../components'
 import { FilterBar } from './components/FilterBar'
+import { getProductList } from '../../Services/productService';
+import {  toast } from 'react-toastify';
 
 
 
@@ -17,16 +19,32 @@ export const ProductList = () => {
   const searchTerm= new URLSearchParams(search).get("q");
  
   useTitle("Explore E-Books Collection");
+  const [errorMessage, setErrorMessage] = useState("");
   useEffect (()=> {
       async function fetchProducts() {
-        
-          const response = await fetch(`http://localhost:8000/products?name_gte=${ search ? searchTerm : "" }`);
-          const data= await response.json();
-          
+         try{
+          const data= await getProductList(searchTerm);
           initialProductList(data);
+          setErrorMessage("");         }
+         catch(error){ 
+          toast.error('error.message', {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored" ,
+            closeButton:true
+            });
+         }
+          
+          
+          
       }
       fetchProducts();
-  },[searchTerm])
+  },[searchTerm]);//eslint-disable-line
 
   return (
     <main>
@@ -41,7 +59,10 @@ export const ProductList = () => {
       </div>    
 
       <div className="flex flex-wrap justify-center lg:flex-row">
-        {
+        
+        { errorMessage     }
+        { 
+         
           products.map((product)=> (
               <ProductCard key={product.id} product={product} />
           ))

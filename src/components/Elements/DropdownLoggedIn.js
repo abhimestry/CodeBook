@@ -1,11 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
+import { logout } from "../../Services/authService";
 
 export const DropdownLoggedIn = ({setDropdown}) => {
+     
     const Navigate= useNavigate();
     function handleLoggedOut(){
-        sessionStorage.removeItem("token");
-        sessionStorage.removeItem("cbid");
-        sessionStorage.removeItem("username");
+        logout();
         setDropdown(false);
         Navigate("/");
     }
@@ -19,7 +19,7 @@ export const DropdownLoggedIn = ({setDropdown}) => {
                   <Link to="/products"  onClick={()=> setDropdown(false)}  className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">All eBooks</Link>
               </li>
               <li>
-                  <Link to="/"  onClick={()=> setDropdown(false)}  className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Dashboard</Link>
+                  <Link to="/dashboard"  onClick={()=> setDropdown(false)}  className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Dashboard</Link>
               </li>
           </ul>
           <div className="py-1">

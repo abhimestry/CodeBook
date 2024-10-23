@@ -23,38 +23,13 @@ export const CartProvider = ({children})=>{
             }
         })
     }
-
-    function removeFromCart(product){
-        const updatedList = state.cartList.filter(item => item.id !== product.id);
-        const updatedTotal = state.total - product.price;
-
-        dispatch({
-            type: "REMOVE_FROM_CART",
-            payload: {
-                products: updatedList,
-                total: updatedTotal
-            }
-        })
-    }
-
-    function clearCart(){
-        dispatch({
-            type: "CLEAR_CART",
-            payload: {
-                products: [],
-                total: 0
-            }
-        })
-    }
-
+ 
     const value = {
         state,
         dispatch,
         cartList: state.cartList,
         total: state.total,
-        addToCart: addToCart,
-        removeFromCart,
-        clearCart
+        addToCart  
     }
 
     return (
