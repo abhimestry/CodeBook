@@ -3,7 +3,7 @@ import { CartEmpty } from "./components/CartEmpty";
 import { useCart } from '../../context';
 import { CartList } from './components/CartList';
 export const CartPage = () => {
-  const { cartList, total } = useCart();
+  const { cartList  } = useCart();
 return (
     <main>
         {

@@ -29,7 +29,7 @@ const { id } = useParams();
             setProduct(data);
         }
         fetchProduct();
-    },[]);
+    },[id]);
     useTitle(product.name);
   return (
     <main>
